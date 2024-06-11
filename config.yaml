@@ -20,3 +20,5 @@ wart_tren: [1, 4, 6, 9]
 wart_eksp: [1, 2, 3, 4, 6, 7, 8, 9]
 znak_mniejszy: f
 znak_wiekszy: j
+klawisz_przerwij: f7
+klawisz_dalej: space
