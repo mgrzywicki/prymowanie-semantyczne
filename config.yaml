@@ -1,20 +1,22 @@
-# All values in no of frames
-BACKGROUND_COLOR: darkgray
-FRAME_RATE: 60
-SCREEN_RES: [1920, 1080]
-FIX_CROSS_TIME: 30 
-NO_TRAINING_TRIALS: [5, 1]
-NO_BLOCKS: 1
-TRIALS_IN_BLOCK: 2
-TRAINING_TRIALS: 2
-FIX_CROSS_COLOR: black
-STIM_LETTERS: ←→↑↓
-STIM_SIZE: 25
-STIM_SHIFT: 600
-STIM_TIME: 15
-REACTION_TIME: 90
-MASK_TIME: 10
-REACTION_KEYS: [left, right, up, down]
-REACTION_KEYS_SEP: 30
-STIM_COLOR: dimgray
-
+#wszystkie czasy podane w klatkach, chyba że zaznaczono inaczej
+kolor_tla: #A9A9A9
+kolor_czcionki: #FFFFFF
+kolor_fiks_dom: #000000
+kolor_fiks_zgod: #00FF00
+kolor_fiks_nzgod: #FF0000
+czas_fiksacji_dom: 36
+czas_fiksacji_kol: 9
+czas_maski: 2
+czas_pryma: 1
+czas_bodziec: 12
+czas_oczekiwania: 120
+ekran_odsw: 60
+ekran_rozdz: [1920, 1080]
+ile_cz_tren: 1
+ile_cz_eksp: 4
+ile_prob_tren: 16
+ile_prob_eksp: 64
+wart_tren: [1, 4, 6, 9]
+wart_eksp: [1, 2, 3, 4, 6, 7, 8, 9]
+znak_mniejszy: f
+znak_wiekszy: j
