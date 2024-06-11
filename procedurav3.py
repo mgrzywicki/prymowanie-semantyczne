@@ -3,7 +3,8 @@
 #2. Szczególniejsze opisanie poszczególnych etapów kodu.
 #3. Wyczyszczenie kodu z niewykorzystywanych zmiennych i poleceń.
 #4. Określanie ścieżki dostępu do pliku z kodem i zapisywanie wyników do pliku w tym samym katalogu.
-#5. Estetyka kodu.
+#5. Estetyka komunikatów.
+#6. Estetyka kodu.
 
 import codecs, random, string, csv, yaml #os?
 from psychopy import visual, core, event, gui, logging
