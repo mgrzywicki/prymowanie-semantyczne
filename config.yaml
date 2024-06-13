@@ -1,10 +1,10 @@
 # wszystkie czasy podane w klatkach, chyba że zaznaczono inaczej
 # wartość dla czasu wyświetlania punktu fiksacji musi być parzysta
-KOLOR_TLA: #A9A9A9
-KOLOR_CZCIONKI: #FFFFFF
-KOLOR_FIKS_DOM: #000000
-KOLOR_FIKS_ZGOD: #00FF00
-KOLOR_FIKS_NZGOD: #FF0000
+KOLOR_TLA: '#A9A9A9'
+KOLOR_CZCIONKI: '#FFFFFF'
+KOLOR_FIKS_DOM: '#000000'
+KOLOR_FIKS_ZGOD: '#00FF00'
+KOLOR_FIKS_NZGOD: '#FF0000'
 CZAS_FIKS: 36
 CZAS_MASKA: 2
 CZAS_PRYMA: 1
