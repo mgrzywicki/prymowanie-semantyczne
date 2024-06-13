@@ -1,22 +1,22 @@
-#wszystkie czasy podane w klatkach, chyba że zaznaczono inaczej
-kolor_tla: #A9A9A9
-kolor_czcionki: #FFFFFF
-kolor_fiks_dom: #000000
-kolor_fiks_zgod: #00FF00
-kolor_fiks_nzgod: #FF0000
-#wartość dla czasu wyświetlania punktu fiksacji musi być parzysta
-czas_fiksacji: 36
-czas_maska: 2
-czas_pryma: 1
-czas_bodziec: 12
-czas_oczekiwania: 120
-ekran_odsw: 60
-ekran_rozdz: [1920, 1080]
-ile_cz_tren: 1
-ile_cz_eksp: 4
-ile_prob_tren: 16
-ile_prob_eksp: 64
-wart_tren: [1, 4, 6, 9]
-wart_eksp: [1, 2, 3, 4, 6, 7, 8, 9]
-znak_mniejszy: f
-znak_wiekszy: j
+# wszystkie czasy podane w klatkach, chyba że zaznaczono inaczej
+# wartość dla czasu wyświetlania punktu fiksacji musi być parzysta
+KOLOR_TLA: #A9A9A9
+KOLOR_CZCIONKI: #FFFFFF
+KOLOR_FIKS_DOM: #000000
+KOLOR_FIKS_ZGOD: #00FF00
+KOLOR_FIKS_NZGOD: #FF0000
+CZAS_FIKS: 36
+CZAS_MASKA: 2
+CZAS_PRYMA: 1
+CZAS_BODZIEC: 12
+CZAS_OCZEKIW: 120
+EKRAN_ODSW: 60
+EKRAN_ROZDZ: [1920, 1080]
+ILE_CZ_TREN: 1
+ILE_CZ_EKSP: 4
+ILE_PROB_TREN: 16
+ILE_PROB_EKSP: 64
+WART_TREN: [1, 4, 6, 9]
+WART_EKSP: [1, 2, 3, 4, 6, 7, 8, 9]
+ZNAK_MNIEJSZY: f
+ZNAK_WIEKSZY: j
