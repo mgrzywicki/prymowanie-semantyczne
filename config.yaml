@@ -4,9 +4,9 @@ kolor_czcionki: #FFFFFF
 kolor_fiks_dom: #000000
 kolor_fiks_zgod: #00FF00
 kolor_fiks_nzgod: #FF0000
-czas_fiksacji_dom: 36
-czas_fiksacji_kol: 9
-czas_maski: 2
+#wartość dla czasu wyświetlania punktu fiksacji musi być parzysta
+czas_fiksacji: 36
+czas_maska: 2
 czas_pryma: 1
 czas_bodziec: 12
 czas_oczekiwania: 120
