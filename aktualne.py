@@ -140,7 +140,7 @@ def uruchom_probe(win, konf, zegar, fiks, pryma, cel, maska, wartosci, czy_treni
 
 
 WYNIKI = list()
-WYNIKI.append(['ID_SESJI', u'Numer pr\uF3by', 'Czas reakcji', u'Poprawno\u15B\u107'])  # nagłówek wyników
+WYNIKI.append(['ID_SESJI', u'Numer pr\u0F3by', 'Czas reakcji', u'Poprawno\u015B\u0107'])  # nagłówek wyników
 ID_SESJI = ''
 EKRAN_ROZDZ = []
 
