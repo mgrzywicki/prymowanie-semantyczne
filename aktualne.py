@@ -78,12 +78,12 @@ def uruchom_probe(win, konf, zegar, fiks, pryma, cel, maska, wartosci, czy_treni
 
     # Losowanie odbywa się inaczej dla sesji treningowej i eksperymentalnej
     if (czy_treningowa==True): # dla sesji treningowej
-        para = random.choice(wartosci)
+        para = random.choice(wartosci) # wylosowanie pary pryma-cel z dostępnych możliwośći
         wart_pryma = para[0]
         wart_cel = para[1]
-        wartosci.remove(para)
+        wartosci.remove(para) # losowanie bez zwracania
     else:
-        wart_pryma = random.choice(wartosci)
+        wart_pryma = random.choice(wartosci) # w części eksperymentalnej losujemy ze zwracaniem
         wart_cel = random.choice(wartosci)
 
     # Pre-trial
@@ -91,23 +91,47 @@ def uruchom_probe(win, konf, zegar, fiks, pryma, cel, maska, wartosci, czy_treni
     pryma.text = wart_pryma
     cel.text = wart_cel
 
-
     # === Start trial ===
-    # This part is time-crucial. All stims must be already prepared.
-    # Only .draw() .flip() and reaction related stuff goes there.
+    for ile_klatek in range(konf['CZAS_FIKS']):
+        fiks.draw()
+        win.flip()
+    for ile_klatek in range(konf['CZAS_MASKA']):
+        maska.draw()
+        win.flip()
+    for ile_klatek in range(konf['CZAS_PRYMA']):
+        pryma.draw()
+        win.flip()
+    for ile_klatek in range(konf['CZAS_MASKA']):
+        maska.draw()
+        win.flip()
+    win.callOnFlip(zegar.reset)
+    for ile_klatek in range(konf['CZAS_CEL']):
+        cel.draw()
+        win.flip()
 
+    klawisz = event.waitKeys(keyList=[konf['ZNAK_MNIEJSZY'], konf['ZNAK_WIEKSZY']], maxWait=konf['CZAS_OCZEKIW'])
+    czas_reakcji = zegar.getTime()
+
+    czy_zgodny = 0
+    if (wart_cel < 5 and klawisz == konf['ZNAK_MNIEJSZY']) or (wart_cel > 5 and klawisz == konf['ZNAK_WIEKSZY']):
+        czy_zgodny = 1
+
+    if czy_zgodny == 1:
+        fiks.color = konf['KOLOR_FIKS_ZGOD']
+    else:
+        fiks.color = konf['KOLOR_FIKS_NZGOD']
 
     if (czy_treningowa == True):
-        return wartosci
+        return wartosci, czy_zgodny, wart_pryma, wart_cel
     else:
-        return
+        return czas_reakcji, czy_zgodny
 
 
 # ZMIENNE GLOBALNE
 
 
 WYNIKI = list()
-WYNIKI.append(['ID_SESJI', 'Numer_proby', 'Reaction time', 'Correctness'])  # Nagłówek wyników
+WYNIKI.append(['ID_SESJI', 'Numer próby', 'Czas reakcji', 'Poprawność'])  # Nagłówek wyników
 ID_SESJI = ''
 EKRAN_ROZDZ = []
 
@@ -142,14 +166,15 @@ pokaz_info(win, join('.', 'messages', 'before_training.txt'))
 
 wartosci = [[i, j] for i in konf['WART_TREN'] for j in konf['WART_TREN']] # tworzenie listy wszystkich kombinacji pryma-cel
 for ile_prob in range(konf['ILE_PROB_TREN']):
-    wartosci = uruchom_probe(win, konf, zegar, fiks, pryma, cel, maska, wartosci, True)
+    wartosci, czy_zgodny, wart_pryma, wart_cel = uruchom_probe(win, konf, zegar, fiks, pryma, cel, maska, wartosci, True)
+    WYNIKI.append([ID_SESJI, ile_prob, 'sesja treningowa', czy_zgodny, wart_pryma, wart_cel])
 
 # === Experiment ===
 pokaz_info(win, join('.', 'messages', 'before_experiment.txt'))
 numer_proby = 0
-for ile_czesci in range(konf['ILE_CZESCI']):
-    for ile_prob in range(konf['ILE_PROB_EKSP']):
-        uruchom_probe(win, konf, zegar, fiks, pryma, cel, maska, konf['WART_EKSP'])
+#for ile_czesci in range(konf['ILE_CZESCI']):
+#    for ile_prob in range(konf['ILE_PROB_EKSP']):
+#       uruchom_probe(win, konf, zegar, fiks, pryma, cel, maska, konf['WART_EKSP'])
 
 # === Zamykanie i czyszczenie ===
 zapisz_wyniki_beh()
