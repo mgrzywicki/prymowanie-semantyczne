@@ -1,0 +1,9 @@
+Witaj w badaniu!
+Za chwilę na ekranie pojawiać się będą cyfry (1, 2, 3, 4, 6, 7, 8, 9), a Twoim zadaniem będzie wskazanie, czy dana cyfra jest większa czy mniejsza od 5. Przed wyświetleniem cyfry na ekranie pojawi się ciąg pięciu liter.
+Do dokonania wyboru przeznaczone będą dwa klawisze:
+‘J’ dla cyfr większych od 5
+‘F’ dla cyfr mniejszych od 5
+Postaraj się dokonywać wyboru poprawnie oraz najszybciej jak to możliwe.
+Najpierw odbędzie się sesja treningowa, w której nie będą rejestrowane czasy reakcji, a po każdej odpowiedzi udzielona zostanie informacja zwrotna, czy zadanie zostało wykonane poprawnie (punkt fiksacji zaświeci się na zielono w sytuacji, gdy odpowiedź będzie poprawna i na czerwono, gdy będzie błędna). Po sesji treningowej rozpocznie się sesja eksperymentalna, w której mierzone będą czasy reakcji, a informacja dotycząca poprawności wykonania nie będzie wyświetlana.
+
+Aby przejść do dalszej części badania naciśnij spację.
