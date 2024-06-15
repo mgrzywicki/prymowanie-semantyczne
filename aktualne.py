@@ -7,6 +7,8 @@
 # read_text_from_file to wczytaj_tekst_z_pliku
 # check_exit to czy_przerwano
 # SCREEN_RES to EKRAN_ROZDZ
+# run_trial to uruchom_probe
+# trial_no to numer_proby
 
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -69,23 +71,43 @@ def czy_przerwano(key: str = 'f7') -> None:
         przerwij_z_bledem('Eksperyment zostal zakonczony przez badanego. Wcisnieto {}.'.format(key))
 
 
-def run_trial(win, conf, clock, stim, wartosci): # potrzebujemy pobrać listę wartości, bo są różne dla treningowej i eksperymentalnej
+def uruchom_probe(win, konf, zegar, fiks, pryma, cel, maska, wartosci, czy_treningowa=False):
 
-    litery = random.choices(string.ascii_uppercase, k=5)
-    '''
-    1) przygotowanie bodźców losowych?
-    2) stimsy: punkt fiksacji, tekst.
-    '''
+    # Przygotowanie bodźców losowych
+    litery_maska = random.choices(string.ascii_uppercase, k=5)
+
+    # Losowanie odbywa się inaczej dla sesji treningowej i eksperymentalnej
+    if (czy_treningowa==True): # dla sesji treningowej
+        para = random.choice(wartosci)
+        wart_pryma = para[0]
+        wart_cel = para[1]
+        wartosci.remove(para)
+    else:
+        wart_pryma = random.choice(wartosci)
+        wart_cel = random.choice(wartosci)
+
+    # Pre-trial
+    maska.text = ''.join(litery_maska)
+    pryma.text = wart_pryma
+    cel.text = wart_cel
+
+
     # === Start trial ===
     # This part is time-crucial. All stims must be already prepared.
     # Only .draw() .flip() and reaction related stuff goes there.
+
+
+    if (czy_treningowa == True):
+        return wartosci
+    else:
+        return
 
 
 # ZMIENNE GLOBALNE
 
 
 WYNIKI = list()
-WYNIKI.append(['ID_SESJI', 'Trial_no', 'Reaction time', 'Correctness'])  # Nagłówek wyników
+WYNIKI.append(['ID_SESJI', 'Numer_proby', 'Reaction time', 'Correctness'])  # Nagłówek wyników
 ID_SESJI = ''
 EKRAN_ROZDZ = []
 
@@ -95,7 +117,7 @@ dict_dlg = gui.DlgFromDict(dictionary=info, title='Informacje o badanym')
 if not dict_dlg.OK:
     przerwij_z_bledem('Zamknieto okno dialogowe.')
 
-clock = core.Clock()
+zegar = core.Clock()
 konf: Dict = yaml.load(open('config.yaml', encoding='utf-8'), Loader=yaml.SafeLoader)
 ekran_odsw: int = konf['EKRAN_ODSW']
 EKRAN_ROZDZ: List[int] = konf['EKRAN_ROZDZ']
@@ -110,12 +132,24 @@ logging.info('Rozdzielczosc: {}'.format(EKRAN_ROZDZ))
 
 # === Prepare stimulus here ===
 fiks = visual.TextStim(win, text='+', height=50, color=konf['KOLOR_FIKS_DOM'], font='Courier New')
-maska = visual.TextStim(win, text=''.join(litery), height=50, color=konf['KOLOR_CZCIONKI'], font='Courier New')
+maska = visual.TextStim(win, height=50, color=konf['KOLOR_CZCIONKI'], font='Courier New')
+pryma = visual.TextStim(win, height=50, color=konf['KOLOR_CZCIONKI'], font='Courier New')
+cel = visual.TextStim(win, height=50, color=konf['KOLOR_CZCIONKI'], font='Courier New')
 
 # === Training ===
 pokaz_info(win, join('.', 'messages', 'start.txt'))
 pokaz_info(win, join('.', 'messages', 'before_training.txt'))
 
+wartosci = [[i, j] for i in konf['WART_TREN'] for j in konf['WART_TREN']] # tworzenie listy wszystkich kombinacji pryma-cel
+for ile_prob in range(konf['ILE_PROB_TREN']):
+    wartosci = uruchom_probe(win, konf, zegar, fiks, pryma, cel, maska, wartosci, True)
+
+# === Experiment ===
+pokaz_info(win, join('.', 'messages', 'before_experiment.txt'))
+numer_proby = 0
+for ile_czesci in range(konf['ILE_CZESCI']):
+    for ile_prob in range(konf['ILE_PROB_EKSP']):
+        uruchom_probe(win, konf, zegar, fiks, pryma, cel, maska, konf['WART_EKSP'])
 
 # === Zamykanie i czyszczenie ===
 zapisz_wyniki_beh()
