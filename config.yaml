@@ -1,5 +1,4 @@
-# wszystkie czasy podane w klatkach, chyba że zaznaczono inaczej
-# wartość dla czasu wyświetlania punktu fiksacji musi być parzysta
+# wszystkie czasy podane w klatkach, oprócz czasu oczekiwania na reakcję, podanego w sekundach
 KOLOR_TLA: '#A9A9A9'
 KOLOR_CZCIONKI: '#FFFFFF'
 KOLOR_FIKS_DOM: '#000000'
@@ -9,7 +8,7 @@ CZAS_FIKS: 36
 CZAS_MASKA: 2
 CZAS_PRYMA: 1
 CZAS_CEL: 12
-CZAS_OCZEKIW: 120
+CZAS_OCZEKIW: 2
 EKRAN_ODSW: 60
 EKRAN_ROZDZ: [1920, 1080]
 ILE_CZESCI: 4
