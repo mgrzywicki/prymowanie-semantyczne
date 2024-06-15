@@ -15,6 +15,7 @@ import yaml
 import atexit
 import codecs
 import random
+import string
 
 from os.path import join
 from typing import Dict, List
@@ -68,12 +69,17 @@ def czy_przerwano(key: str = 'f7') -> None:
         przerwij_z_bledem('Eksperyment zostal zakonczony przez badanego. Wcisnieto {}.'.format(key))
 
 
-# def run_trial(win, conf, clock, stim):
+def run_trial(win, conf, clock, stim, wartosci): # potrzebujemy pobrać listę wartości, bo są różne dla treningowej i eksperymentalnej
+
+    litery = random.choices(string.ascii_uppercase, k=5)
     '''
     1) przygotowanie bodźców losowych?
-    2) stimsy: punkt fiksacji, teksty
-    3) próba (draw, flip, reakcje)
+    2) stimsy: punkt fiksacji, tekst.
     '''
+    # === Start trial ===
+    # This part is time-crucial. All stims must be already prepared.
+    # Only .draw() .flip() and reaction related stuff goes there.
+
 
 # ZMIENNE GLOBALNE
 
@@ -102,9 +108,14 @@ logging.LogFile(join('wyniki', f'{ID_SESJI}.log'), level=logging.INFO)
 logging.info('Odswiezanie: {}'.format(ekran_odsw))
 logging.info('Rozdzielczosc: {}'.format(EKRAN_ROZDZ))
 
+# === Prepare stimulus here ===
+fiks = visual.TextStim(win, text='+', height=50, color=konf['KOLOR_FIKS_DOM'], font='Courier New')
+maska = visual.TextStim(win, text=''.join(litery), height=50, color=konf['KOLOR_CZCIONKI'], font='Courier New')
+
 # === Training ===
 pokaz_info(win, join('.', 'messages', 'start.txt'))
 pokaz_info(win, join('.', 'messages', 'before_training.txt'))
+
 
 # === Zamykanie i czyszczenie ===
 zapisz_wyniki_beh()
