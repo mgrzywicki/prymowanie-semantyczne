@@ -16,7 +16,7 @@ from psychopy import core, event, gui, logging, visual
 @atexit.register
 def zapisz_wyniki_beh() -> None:
     nazwa_pliku = ID_SESJI + '_' + str(random.choice(range(100, 1000))) + '_beh.csv'  # nazwa_pliku: plik do odczytu
-    with open(join('results', nazwa_pliku), 'w', encoding='utf-8') as beh_file:  # beh_file: 
+    with open(join('results', nazwa_pliku), 'w', encoding='utf-8') as beh_file:  # beh_file: zmienna pomocnicza
         beh_writer = csv.writer(beh_file)
         beh_writer.writerows(WYNIKI)
     logging.flush()
@@ -40,8 +40,8 @@ def wczytaj_tekst_z_pliku(nazwa_pliku: str, insert: str = '') -> str:  # nazwa_p
     if not isinstance(nazwa_pliku, str):
         logging.error('Problem z odczytaniem pliku. Nazwa pliku musi być ciągiem znaków.')
         raise TypeError('nazwa_pliku musi być ciągiem znaków.')
-    msg = list()  # wiadomość do późniejszego wyświetlenia
-    with codecs.open(nazwa_pliku, encoding='utf-8', mode='r') as data_file:  # data_file: ???
+    msg = list()  # msg: wiadomość do późniejszego wyświetlenia
+    with codecs.open(nazwa_pliku, encoding='utf-8', mode='r') as data_file:  # data_file: zmienna pomocnicza
         for line in data_file:
             if not line.startswith('#'):  # jeżeli linijka nie jest komentarzem
                 if line.startswith('<--insert-->'):
