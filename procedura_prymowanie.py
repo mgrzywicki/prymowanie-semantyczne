@@ -15,8 +15,8 @@ from psychopy import core, event, gui, logging, visual
 # Zapisywanie wyników w pliku z upewnieniem się, że wyniki zapiszą się nawet przy przerwaniu procedury.
 @atexit.register
 def zapisz_wyniki_beh() -> None:
-    nazwa_zapisanego = ID_SESJI + '_' + str(random.choice(range(100, 1000))) + '_beh.csv'  # nazwa_zapisanego: ???
-    with open(join('results', nazwa_zapisanego), 'w', encoding='utf-8') as beh_file:  # beh_file: nazwa pliku do zapisu danych
+    nazwa_pliku = ID_SESJI + '_' + str(random.choice(range(100, 1000))) + '_beh.csv'  # nazwa_pliku: plik do odczytu
+    with open(join('results', nazwa_pliku), 'w', encoding='utf-8') as beh_file:  # beh_file: 
         beh_writer = csv.writer(beh_file)
         beh_writer.writerows(WYNIKI)
     logging.flush()
@@ -36,12 +36,12 @@ def czy_przerwano(key: str = 'f7') -> None:
 
 
 # Czytanie instrukcji z pliku.
-def wczytaj_tekst_z_pliku(nazwa_zapisanego: str, insert: str = '') -> str:  # nazwa_zapisanego: plik do odczytu danych
-    if not isinstance(nazwa_zapisanego, str):
+def wczytaj_tekst_z_pliku(nazwa_pliku: str, insert: str = '') -> str:  # nazwa_pliku: plik do odczytu danych
+    if not isinstance(nazwa_pliku, str):
         logging.error('Problem z odczytaniem pliku. Nazwa pliku musi być ciągiem znaków.')
-        raise TypeError('nazwa_zapisanego musi być ciągiem znaków.')
+        raise TypeError('nazwa_pliku musi być ciągiem znaków.')
     msg = list()  # wiadomość do późniejszego wyświetlenia
-    with codecs.open(nazwa_zapisanego, encoding='utf-8', mode='r') as data_file:  # data_file: ???
+    with codecs.open(nazwa_pliku, encoding='utf-8', mode='r') as data_file:  # data_file: ???
         for line in data_file:
             if not line.startswith('#'):  # jeżeli linijka nie jest komentarzem
                 if line.startswith('<--insert-->'):
@@ -53,8 +53,8 @@ def wczytaj_tekst_z_pliku(nazwa_zapisanego: str, insert: str = '') -> str:  # na
 
 
 # Wyświetlanie instrukcji z pliku.
-def pokaz_info(win: visual.Window, nazwa_zapisanego: str, insert: str = '') -> None: 
-    msg = wczytaj_tekst_z_pliku(nazwa_zapisanego, insert=insert) 
+def pokaz_info(win: visual.Window, nazwa_pliku: str, insert: str = '') -> None: 
+    msg = wczytaj_tekst_z_pliku(nazwa_pliku, insert=insert) 
     msg = visual.TextStim(win, font='Courier New', color=konf['KOLOR_CZCIONKI'], text=msg, height=40, wrapWidth=1500)
     msg.draw()
     win.flip()
@@ -143,7 +143,7 @@ dict_dlg = gui.DlgFromDict(dictionary=info, title='Informacje o badanym')
 if not dict_dlg.OK:
     przerwij_z_bledem('Zamknięto okno dialogowe.')
 
-# TU BY SIĘ PRZYDAŁO COŚ OPISAĆ!!!
+# Utworzenie zegara oraz pliku konfiguracyjnego.
 zegar = core.Clock()
 konf: Dict = yaml.load(open('config.yaml', encoding='utf-8'), Loader=yaml.SafeLoader)
 ekran_odsw: int = konf['EKRAN_ODSW']
@@ -152,7 +152,7 @@ EKRAN_ROZDZ: List[int] = konf['EKRAN_ROZDZ']
 win = visual.Window(EKRAN_ROZDZ, fullscr=True, units='pix', color=konf['KOLOR_TLA'])
 event.Mouse(visible=False, newPos=None, win=win)
 
-# I TU!!!
+# Zapisanie informacji w dzienniku zmian.
 ID_SESJI = info['Identyfikator'] + info['Płeć'] + info['Wiek']
 logging.LogFile(join('results', f'{ID_SESJI}.log'), level=logging.INFO)
 logging.info('Odswiezanie: {}'.format(ekran_odsw))
