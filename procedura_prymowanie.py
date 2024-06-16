@@ -12,28 +12,38 @@ from typing import Dict, List
 from psychopy import core, event, gui, logging, visual
 
 
+# Zapisywanie wyników w pliku z upewnieniem się, że wyniki zapiszą się nawet przy przerwaniu procedury.
 @atexit.register
 def zapisz_wyniki_beh() -> None:
-    nazwa_zapisanego = ID_SESJI + '_' + str(random.choice(range(100, 1000))) + '_beh.csv'
-    with open(join('results', nazwa_zapisanego), 'w', encoding='utf-8') as beh_file:
+    nazwa_zapisanego = ID_SESJI + '_' + str(random.choice(range(100, 1000))) + '_beh.csv'  # nazwa_zapisanego: ???
+    with open(join('results', nazwa_zapisanego), 'w', encoding='utf-8') as beh_file:  # beh_file: nazwa pliku do zapisu danych
         beh_writer = csv.writer(beh_file)
         beh_writer.writerows(WYNIKI)
     logging.flush()
 
 
+# Przerywanie procedury z błędem.
 def przerwij_z_bledem(err: str) -> None:
     logging.critical(err)
     raise Exception(err)
 
 
-def wczytaj_tekst_z_pliku(nazwa_zapisanego: str, insert: str = '') -> str:
+# Sprawdzenie czy nastąpiło przerwanie procedury poprzez naciśnięcie klawisza f7.
+def czy_przerwano(key: str = 'f7') -> None:
+    stop = event.getKeys(keyList=[key])
+    if stop:
+        przerwij_z_bledem('Eksperyment został zakończony przez badanego. Wciśnięto {}.'.format(key))
+
+
+# Czytanie instrukcji z pliku.
+def wczytaj_tekst_z_pliku(nazwa_zapisanego: str, insert: str = '') -> str:  # nazwa_zapisanego: plik do odczytu danych
     if not isinstance(nazwa_zapisanego, str):
-        logging.error('Problem z odczytaniem pliku. Nazwa pliku musi być ciagiem znakow.')
-        raise TypeError('nazwa_zapisanego musi byc ciagiem znakow')
-    msg = list()
-    with codecs.open(nazwa_zapisanego, encoding='utf-8', mode='r') as data_file:
+        logging.error('Problem z odczytaniem pliku. Nazwa pliku musi być ciągiem znaków.')
+        raise TypeError('nazwa_zapisanego musi być ciągiem znaków.')
+    msg = list()  # wiadomość do późniejszego wyświetlenia
+    with codecs.open(nazwa_zapisanego, encoding='utf-8', mode='r') as data_file:  # data_file: ???
         for line in data_file:
-            if not line.startswith('#'):
+            if not line.startswith('#'):  # jeżeli linijka nie jest komentarzem
                 if line.startswith('<--insert-->'):
                     if insert:
                         msg.append(insert)
@@ -42,28 +52,23 @@ def wczytaj_tekst_z_pliku(nazwa_zapisanego: str, insert: str = '') -> str:
     return ''.join(msg)
 
 
-def pokaz_info(win: visual.Window, nazwa_zapisanego: str, insert: str = '') -> None:
-    msg = wczytaj_tekst_z_pliku(nazwa_zapisanego, insert=insert)
+# Wyświetlanie instrukcji z pliku.
+def pokaz_info(win: visual.Window, nazwa_zapisanego: str, insert: str = '') -> None: 
+    msg = wczytaj_tekst_z_pliku(nazwa_zapisanego, insert=insert) 
     msg = visual.TextStim(win, font='Courier New', color=konf['KOLOR_CZCIONKI'], text=msg, height=40, wrapWidth=1500)
     msg.draw()
     win.flip()
-    key = event.waitKeys(keyList=['f7', 'space'])
-    if key == ['f7']:
-        przerwij_z_bledem('Eksperyment zostal zakonczony przez badanego. Wcisnieto F7.')
+    key = event.waitKeys(keyList=['space'])
+    czy_przerwano('f7')
     win.flip()
 
 
-def czy_przerwano(key: str = 'f7') -> None:
-    stop = event.getKeys(keyList=[key])
-    if stop:
-        przerwij_z_bledem('Eksperyment zostal zakonczony przez badanego. Wcisnieto {}.'.format(key))
-
-
+# Uruchamianie próby badawczej.
 def uruchom_probe(win, konf, zegar, fiks, pryma, cel, maska, wartosci, czy_treningowa=0):
-    # Przygotowanie bodźców losowych
     litery_maska = random.choices(string.ascii_uppercase, k=5)
-
-    # Losowanie odbywa się inaczej dla sesji treningowej i eksperymentalnej
+    # przygotowanie maski w celu wyświetlenia tej samej kombinacji przed i po prymie
+    
+    # Losowanie odbywa się inaczej dla sesji treningowej i eksperymentalnej.
     if czy_treningowa == 1:  # dla sesji treningowej
         para = random.choice(wartosci)  # wylosowanie pary pryma-cel z dostępnych możliwośći
         wart_pryma = para[0]
@@ -73,12 +78,12 @@ def uruchom_probe(win, konf, zegar, fiks, pryma, cel, maska, wartosci, czy_treni
         wart_pryma = random.choice(wartosci)  # w części eksperymentalnej losujemy ze zwracaniem
         wart_cel = random.choice(wartosci)
 
-    # Pre-trial
+    # Przygotowanie do próby.
     maska.text = ''.join(litery_maska)
     pryma.text = wart_pryma
     cel.text = wart_cel
 
-    # === Start trial ===
+    # Wyświetlanie kolejnych bodźców.
     for ile_klatek in range(konf['CZAS_FIKS']):
         fiks.draw()
         win.flip()
@@ -97,7 +102,8 @@ def uruchom_probe(win, konf, zegar, fiks, pryma, cel, maska, wartosci, czy_treni
         win.flip()
     win.flip()
 
-    klawisz = event.waitKeys(keyList=[konf['ZNAK_MNIEJSZY'], konf['ZNAK_WIEKSZY']], maxWait=konf['CZAS_OCZEKIW'])
+    klawisz = event.waitKeys(keyList=[konf['ZNAK_MNIEJSZY'], konf['ZNAK_WIEKSZY']], maxWait=konf['CZAS_OCZEKIW']) 
+    # oczekiwanie na naciśnięcie klawisza przez badanego
     czas_reakcji = zegar.getTime()
     if not klawisz:
         klawisz = ['brak']  # jeśli badany niczego nie wciśnie na czas
@@ -108,7 +114,7 @@ def uruchom_probe(win, konf, zegar, fiks, pryma, cel, maska, wartosci, czy_treni
         czy_poprawny = 1
 
     if czy_treningowa == 1:
-        if czy_poprawny == 1:  # uczestnicy otrzymują feedback w postaci zmiany koloru punktu fiksacji
+        if czy_poprawny == 1:  # uczestnicy otrzymują informację zwrotną w postaci zmiany koloru punktu fiksacji
             fiks.color = konf['KOLOR_FIKS_ZGOD']
         else:
             fiks.color = konf['KOLOR_FIKS_NZGOD']
@@ -127,36 +133,38 @@ def uruchom_probe(win, konf, zegar, fiks, pryma, cel, maska, wartosci, czy_treni
 
 WYNIKI = list()
 WYNIKI.append(['ID_SESJI', 'Rodzaj sesji', 'Numer części', 'Numer próby', 'Pryma', 'Cel', 'Zgodność', 'Poprawność',
-               'Czas reakcji'])  # Nagłówek wyników
+               'Czas reakcji'])  # nagłówek wyników
 ID_SESJI = ''
 EKRAN_ROZDZ = []
 
-# === Dialog popup ===
-info: Dict = {'Identyfikator': '', 'Wiek': '', 'Plec': ['Mezczyzna', 'Kobieta', 'Inne']}
+# Wyświetlanie okna dialogowego.
+info: Dict = {'Identyfikator': '', 'Wiek': '', 'Płeć': ['Mężczyzna', 'Kobieta', 'Inne']}
 dict_dlg = gui.DlgFromDict(dictionary=info, title='Informacje o badanym')
 if not dict_dlg.OK:
-    przerwij_z_bledem('Zamknieto okno dialogowe.')
+    przerwij_z_bledem('Zamknięto okno dialogowe.')
 
+# TU BY SIĘ PRZYDAŁO COŚ OPISAĆ!!!
 zegar = core.Clock()
 konf: Dict = yaml.load(open('config.yaml', encoding='utf-8'), Loader=yaml.SafeLoader)
 ekran_odsw: int = konf['EKRAN_ODSW']
 EKRAN_ROZDZ: List[int] = konf['EKRAN_ROZDZ']
-# === Scene init ===
+# Przygotowanie okna.
 win = visual.Window(EKRAN_ROZDZ, fullscr=True, units='pix', color=konf['KOLOR_TLA'])
 event.Mouse(visible=False, newPos=None, win=win)
 
-ID_SESJI = info['Identyfikator'] + info['Plec'] + info['Wiek']
+# I TU!!!
+ID_SESJI = info['Identyfikator'] + info['Płeć'] + info['Wiek']
 logging.LogFile(join('results', f'{ID_SESJI}.log'), level=logging.INFO)
 logging.info('Odswiezanie: {}'.format(ekran_odsw))
 logging.info('Rozdzielczosc: {}'.format(EKRAN_ROZDZ))
 
-# === Prepare stimulus here ===
+# Przygotowanie bodźców.
 fiks = visual.TextStim(win, text='+', height=50, color=konf['KOLOR_FIKS_DOM'], font='Courier New')
 maska = visual.TextStim(win, height=50, color=konf['KOLOR_CZCIONKI'], font='Courier New')
 pryma = visual.TextStim(win, height=50, color=konf['KOLOR_CZCIONKI'], font='Courier New')
 cel = visual.TextStim(win, height=50, color=konf['KOLOR_CZCIONKI'], font='Courier New')
 
-# === Training ===
+# Wyświetlanie instrukcji oraz sesja treningowa.
 pokaz_info(win, join('.', 'messages', 'start.txt'))
 pokaz_info(win, join('.', 'messages', 'before_training.txt'))
 
@@ -165,7 +173,7 @@ for numer_proby in range(konf['ILE_PROB_TREN']):
     wartosci, czy_poprawny, wart_pryma, wart_cel = uruchom_probe(win, konf, zegar, fiks, pryma, cel, maska, wartosci, 1)
     WYNIKI.append([ID_SESJI, 'treningowa', '-', numer_proby, '-', wart_pryma, wart_cel, '-', czy_poprawny, '-'])
 
-# === Experiment ===
+# Sesja eksperymentalna.
 pokaz_info(win, join('.', 'messages', 'before_experiment.txt'))
 fiks.color = konf['KOLOR_FIKS_DOM']  # przywrócenie domyślnego koloru punktu fiksacji
 for numer_czesci in range(konf['ILE_CZESCI']):
@@ -179,7 +187,7 @@ for numer_czesci in range(konf['ILE_CZESCI']):
     core.wait(1)
     pokaz_info(win, join('.', 'messages', 'break.txt'))
 
-# === Zamykanie i czyszczenie ===
+# Zamykanie i czyszczenie.
 zapisz_wyniki_beh()
 logging.flush()
 pokaz_info(win, join('.', 'messages', 'end.txt'))
