@@ -16,7 +16,8 @@ from psychopy import core, event, gui, logging, visual
 @atexit.register
 def zapisz_wyniki_beh() -> None:
     nazwa_pliku = ID_SESJI + '_' + str(random.choice(range(100, 1000))) + '_beh.csv'  # nazwa_pliku: plik do odczytu
-    with open(join('results', nazwa_pliku), 'w', encoding='utf-8') as beh_file:  # beh_file: zmienna pomocnicza
+    with open(join('results', nazwa_pliku), 'w',
+              encoding='utf-8') as beh_file:  # beh_file: zmienna pozwalająca odwołać się do zapisywanego pliku
         beh_writer = csv.writer(beh_file)
         beh_writer.writerows(WYNIKI)
     logging.flush()
@@ -41,7 +42,8 @@ def wczytaj_tekst_z_pliku(nazwa_pliku: str, insert: str = '') -> str:  # nazwa_p
         logging.error('Problem z odczytaniem pliku. Nazwa pliku musi być ciągiem znaków.')
         raise TypeError('nazwa_pliku musi być ciągiem znaków.')
     msg = list()  # msg: wiadomość do późniejszego wyświetlenia
-    with codecs.open(nazwa_pliku, encoding='utf-8', mode='r') as data_file:  # data_file: zmienna pomocnicza
+    with codecs.open(nazwa_pliku, encoding='utf-8',
+                     mode='r') as data_file:  # data_file: zmienna pozwalająca odwołać się do wczytywanego pliku
         for line in data_file:
             if not line.startswith('#'):  # jeżeli linijka nie jest komentarzem
                 if line.startswith('<--insert-->'):
@@ -172,6 +174,7 @@ wartosci = [[i, j] for i in konf['WART_TREN'] for j in konf['WART_TREN']]  # two
 for numer_proby in range(konf['ILE_PROB_TREN']):
     wartosci, czy_poprawny, wart_pryma, wart_cel = uruchom_probe(win, konf, zegar, fiks, pryma, cel, maska, wartosci, 1)
     WYNIKI.append([ID_SESJI, 'treningowa', '-', numer_proby, '-', wart_pryma, wart_cel, '-', czy_poprawny, '-'])
+    czy_przerwano('f7')
 
 # Sesja eksperymentalna.
 pokaz_info(win, join('.', 'messages', 'before_experiment.txt'))
@@ -183,6 +186,7 @@ for numer_czesci in range(konf['ILE_CZESCI']):
         WYNIKI.append(
             [ID_SESJI, 'eksperymentalna', numer_czesci, numer_proby, wart_pryma, wart_cel, czy_zgodny, czy_poprawny,
              czas_reakcji * 1000])
+        czy_przerwano('f7')
     win.flip()
     core.wait(1)
     pokaz_info(win, join('.', 'messages', 'break.txt'))
@@ -192,3 +196,4 @@ zapisz_wyniki_beh()
 logging.flush()
 pokaz_info(win, join('.', 'messages', 'end.txt'))
 win.close()
+core.quit()
