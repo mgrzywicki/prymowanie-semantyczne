@@ -185,7 +185,7 @@ for numer_czesci in range(konf['ILE_CZESCI']):
                                                                                      maska, konf['WART_EKSP'])
         WYNIKI.append(
             [ID_SESJI, 'eksperymentalna', numer_czesci, numer_proby, wart_pryma, wart_cel, czy_zgodny, czy_poprawny,
-             czas_reakcji * 1000])
+             czas_reakcji * 1000]) # mnożenie razy 1000 zamienia wynik w sekundach na milisekundy
         czy_przerwano('f7')
     win.flip()
     core.wait(1)
